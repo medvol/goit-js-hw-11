@@ -23,19 +23,22 @@ refs.form.addEventListener('submit', handleSubmit);
 
 async function handleSubmit(event) {
     event.preventDefault();
-    refs.galleryWrapper.innerHTML = '';
-    const searchValue = refs.input.value;
-    const value = await getPictures(searchValue);
-    Notify.success(`Hooray! We found ${value.data.totalHits} images.`);
- 
-     console.log(value)
-    console.log('1')
+    if(event.type === 'submit') refs.galleryWrapper.innerHTML = '';
     
-    if (value.data.hits.length > 0) {
-        console.log('center')
-        // return  Notify.info('Cogito ergo sum')
-    };
-    console.log('2')
+    const searchValue = refs.input.value;
+    if (searchValue === '') return Notify.failure('Please, enter something');
+    const value = await getPictures(searchValue);
+    
+    if (value.hits.length === 0) return Notify.info("Sorry, there are no images matching your search query. Please try again.");
+         
+   
+    Notify.success(`Hooray! We found ${value.totalHits} images.`);
+ 
+    //  console.log(value)
+    // console.log('1')
+    
+    // 
+    // console.log('2')
    
     const markup = createMarkup(value);
     refs.galleryWrapper.insertAdjacentHTML('beforeend', markup);

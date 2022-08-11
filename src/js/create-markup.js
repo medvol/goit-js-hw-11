@@ -1,6 +1,6 @@
 export function createMarkup(values) {
 
-    return values.data.hits.reduce((acc, value) => {
+    return values.hits.reduce((acc, value) => {
         const { webformatURL,largeImageURL, tags, likes, views, comments, downloads } = value;
       return acc + `<div class="photo-card">
        <div class="image-wrapper">
