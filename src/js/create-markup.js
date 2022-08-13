@@ -3,7 +3,7 @@ export function createGalleryMarkup(values) {
     return values.hits.reduce((acc, value) => {
         const { webformatURL,largeImageURL, tags, likes, views, comments, downloads } = value;
       return acc + `<div class="photo-card col ">
-      <div class="card shadow-sm image-overflow">
+      <div class="card shadow-sm">
        <div class="image-wrapper">
           <a href="${largeImageURL}">
            <img src="${webformatURL}" alt="${tags}" loading="lazy" />

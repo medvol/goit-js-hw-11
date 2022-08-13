@@ -1,6 +1,11 @@
-.image-overflow {
+
+.card{
+    transition: transform 250ms ease-in;
     overflow: hidden;
-    
+}
+
+.card:hover{
+    transform: scale(1.05);
 }
 
 .image-wrapper{
@@ -29,7 +34,8 @@
 .bi{
     display: block;
     margin-bottom: 5px;
-    color: #6c757d;;
+    color: #6c757d;
+    cursor: pointer;
     transition: color 250ms ease-in;
    
 }
