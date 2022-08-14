@@ -3,7 +3,6 @@ import 'notiflix/dist/notiflix-3.2.5.min.css';
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import InfiniteScroll from 'infinite-scroll';
-import throttle from 'lodash.throttle';
 import { getPictures } from "./js/fetch-picture";
 import { createGalleryMarkup } from "./js/create-markup";
 import { slowlyScroll } from './js/slowly-scroll';
@@ -14,15 +13,13 @@ const refs = {
     searchBtn: document.querySelector('.search-btn'),
     loadMoreBtn: document.querySelector('.load-more'),
     galleryWrapper: document.querySelector('.gallery'),
-    infiniteScroll: document.querySelector('.pagination__next')
-
+   
 }
 
 const urlParams = {
     BASE_URL: 'https://pixabay.com/api',
     KEY:  '17376022-5b12512663328c07708b99c13',
-    perPage: '40',
-    page: 1,
+    perPage: '40',    
    
 }
 
@@ -30,20 +27,18 @@ let searchItem = ''
 let page = 1;
 
 refs.form.addEventListener('submit', handleSubmit);
-refs.loadMoreBtn.addEventListener('click', handleSubmit)
+
 
 async function handleSubmit(event) {
     event.preventDefault();
-    const { BASE_URL, KEY, perPage, page} = urlParams;
     updateUI(event);
     searchItem = refs.input.value;   
     
-    const valueQuery = await searchQuery(searchItem);
-    refs.infiniteScroll.href=`${BASE_URL}/?key=${KEY}&q=${searchItem}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${perPage}&page=${page+1}.html`
-    
+    const valueQuery = await searchQuery(searchItem);       
     const markup = createGalleryMarkup(valueQuery);
     refs.galleryWrapper.insertAdjacentHTML('beforeend', markup);
     slowlyScroll()
+    
     const lightbox = new SimpleLightbox('.gallery a', {
     
         captionDelay: 250,
@@ -72,31 +67,24 @@ async function searchQuery(value) {
     
 }
 
-
-
-
-addEventListener('scroll', throttle(onScroll, 500) )
-
-function onScroll(event) {
-    
-    let infScroll = new InfiniteScroll(refs.galleryWrapper, {
-        path: function () {
-                return `${urlParams.BASE_URL}/?key=${urlParams.KEY}&q=cat&image_type=photo&orientation=horizontal&safesearch=true&per_page=${urlParams.perPage}&page=${this.pageIndex+1}`},
-        responseBody: 'json',        
-        status: '.scroller-status',      
-        history: false,
-    });
+let infScroll = new InfiniteScroll(refs.galleryWrapper, {
+    path:
+        function () {
+            return `${urlParams.BASE_URL}/?key=${urlParams.KEY}&q=${searchItem}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${urlParams.perPage}&page=${this.pageIndex+1}`},
+    responseBody: 'json',        
+    status: '.scroller-status',
+    scrollThreshold: 100,        
+    history: false,
+});
    
-
- 
-    infScroll.loadNextPage().then(function (loaded) {
-  
-        let { body } = loaded;
-        const markup = createGalleryMarkup(body);
-        refs.galleryWrapper.insertAdjacentHTML('beforeend', markup);
-        
-
-    }).catch(error => console.log(error.message));
-
+let proxyElem = document.createElement('div');
     
-}
+infScroll.on( 'load', function(body) {     
+    const itemsHTML = createGalleryMarkup(body);  
+    proxyElem.innerHTML = itemsHTML;  
+    refs.galleryWrapper.append( ...proxyElem.children );
+});
+
+infScroll.loadNextPage();
+slowlyScroll()
+    
