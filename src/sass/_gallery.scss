@@ -71,12 +71,34 @@
     margin: 0;
     font-size: 12px;
 }
-.infinite-scroll-last{
-    display: none;
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+
+    white-space: nowrap;
+    clip-path: inset(100%);
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+}
+
+
+.show{
+    display: block;
+    opacity: 1;
+}
+.last-page{
+    color: #777;
+    text-align: center;
+   
 }
 
 .infinite-scroll-error{
-    display: none;
+    text-align: center;
 }
 
 .loader-ellips {

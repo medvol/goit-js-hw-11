@@ -1,6 +1,6 @@
-export function createGalleryMarkup(values) {
+export function createGalleryMarkup(values, element) {
 
-    return values.hits.reduce((acc, value) => {
+    const markup = values.hits.reduce((acc, value) => {
         const { webformatURL,largeImageURL, tags, likes, views, comments, downloads } = value;
       return acc + `<div class="photo-card">      
        <div class="image-wrapper">
@@ -37,6 +37,8 @@ export function createGalleryMarkup(values) {
         </div>      
       </div>`
     }, '')
+  
+   element.insertAdjacentHTML('beforeend', markup);
     
 }
 
